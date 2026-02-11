@@ -1,2 +1,67 @@
+# Python environments
 venv/
 .venv/
+env/
+.env/
+ENV/
+
+# Cache directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.cache/
+.cache
+*.cache
+
+# Model files
+.models/
+.models
+*.bin
+*.safetensors
+*.onnx
+*.pickle
+*.pkl
+
+# Logs
+logs/
+.logs/
+*.log
+.log
+*.log.*
+
+# Results and data
+results/
+.results/
+*.jsonl
+*.csv
+*.npy
+*.npz
+*.hdf5
+*.h5
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project specific cache
+similarity_cache.json
+graph_cache/
+embeddings_cache/
+
+# Config with keys (if any)
+.env
+config.local.py
+*.key
+*.token
+
+# Hugging Face cache
+.huggingface/
+.cache/huggingface/
