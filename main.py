@@ -44,7 +44,7 @@ class SemanticGraphSearchSystem:
             config['algorithm'],
             self.semantic_model
         )
-        self.evaluator = SystemEvaluator(self.search_algorithms, config['evaluation'])
+        self.evaluator = SystemEvaluator(self.search_algorithms, config)
         self.visualizer = GraphVisualizer(config['project'])
         
         self.phrases = []

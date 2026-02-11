@@ -1,0 +1,16 @@
+Fruit
+Technology
+Apple
+Computer
+Nature
+Science
+Biology
+Artificial Intelligence
+Medicine
+Robotics
+Agriculture
+Automation
+Physics
+Simulation
+Chemistry
+Data Science

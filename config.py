@@ -18,6 +18,7 @@ class ModelConfig:
     device: str = "cpu"  # must be "cuda" for gpu
     cache_dir: str = "./cache/models"
     batch_size: int = 32
+    enable_cache: bool = True  
 
 @dataclass
 class GraphConfig:

@@ -1,0 +1,16 @@
+Artificial Intelligence
+Robotics
+Machine Learning
+Data Mining
+Neural Network
+Pattern Recognition
+Computer Vision
+Image Processing
+Natural Language Processing
+Speech Recognition
+Algorithm
+Optimization
+Data Structure
+Database
+Programming
+Software Engineering

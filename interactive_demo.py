@@ -163,73 +163,186 @@ class InteractiveDemo:
         print(f"{Fore.WHITE}7. Exit")
     
     def search_path(self):
-        print(f"\n{Fore.YELLOW} Semantic path search")
+        print("\n" + "="*60)
+        print(" Semantic path search")
+        print("="*60)
         
-        print(f"\n{Fore.WHITE}Available phrases:")
-        for i, phrase in enumerate(self.phrases, 1):
-            print(f"{Fore.WHITE}{i:2d}. {phrase}")
+        # Display available phrases
+        print("\nAvailable phrases:")
+        for i, phrase in enumerate(self.system.phrases, 1):
+            print(f"{i:2}. {phrase}")
         
-        start = input(f"\n{Fore.GREEN}Start phrase: ").strip()
-        end = input(f"{Fore.GREEN}End phrase: ").strip()
-        
-        if start not in self.phrases:
-            print(f"{Fore.RED} Start phrase '{start}' not found")
+        # Get start phrase - ONLY NUMBERS
+        start_input = input("\nStart phrase number: ").strip()
+        if not start_input.isdigit():
+            print(" Error: Please enter a valid number")
             return
         
-        if end not in self.phrases:
-            print(f"{Fore.RED} End phrase '{end}' not found")
+        # Get end phrase - ONLY NUMBERS
+        end_input = input("End phrase number: ").strip()
+        if not end_input.isdigit():
+            print(" Error: Please enter a valid number")
             return
         
-        print(f"\n{Fore.YELLOW}Search algorithm:")
-        print(f"{Fore.WHITE}1. BFS (unweighted)")
-        print(f"{Fore.WHITE}2. Dijkstra (shortest path)")
-        print(f"{Fore.WHITE}3. A* (with heuristic)")
+        # Convert to indices (0-based)
+        start_idx = int(start_input) - 1
+        end_idx = int(end_input) - 1
         
-        algo_choice = input(f"{Fore.GREEN}Your choice (1-3): ").strip()
+        # Validate indices
+        if start_idx < 0 or start_idx >= len(self.system.phrases):
+            print(f" Error: Invalid start number. Please enter 1-{len(self.system.phrases)}")
+            return
         
-        algo_map = {
-            '1': Algorithm.BFS,
-            '2': Algorithm.DIJKSTRA,
-            '3': Algorithm.ASTAR
-        }
+        if end_idx < 0 or end_idx >= len(self.system.phrases):
+            print(f" Error: Invalid end number. Please enter 1-{len(self.system.phrases)}")
+            return
         
-        algorithm = algo_map.get(algo_choice, Algorithm.DIJKSTRA)
+        # Get the actual phrases
+        start_phrase = self.system.phrases[start_idx]
+        end_phrase = self.system.phrases[end_idx]
         
-        print(f"\n{Fore.YELLOW} Searching...")
-        result = self.system.find_path(start, end, algorithm)
+        print(f"\n Selected: '{start_phrase}' → '{end_phrase}'")
         
+        # Get algorithm choice
+        print("\nSearch algorithm:")
+        print("1. BFS (unweighted)")
+        print("2. Dijkstra (shortest path)")
+        print("3. A* (with heuristic)")
+        
+        algo_choice = input("Your choice (1-3): ").strip()
+        if not algo_choice.isdigit() or algo_choice not in ['1', '2', '3']:
+            print(" Invalid choice. Using Dijkstra.")
+            from config import Algorithm
+            algorithm = Algorithm.DIJKSTRA
+        else:
+            from config import Algorithm
+            algorithm_map = {'1': Algorithm.BFS, '2': Algorithm.DIJKSTRA, '3': Algorithm.ASTAR}
+            algorithm = algorithm_map[algo_choice]
+        
+        print("\n Searching...")
+        
+        # Find path using the actual phrases
+        result = self.system.find_path(start_phrase, end_phrase, algorithm)
+        
+        # Display results
+        self._display_search_results(result)
+
+    def _display_search_results(self, result):
         print(f"\n{Fore.CYAN}{'='*60}")
         print(f"{Fore.CYAN} Search Results")
         print(f"{Fore.CYAN}{'='*60}")
         
-        if result.get('success'):
-            print(f"{Fore.GREEN} Path found!")
-            print(f"\n{Fore.WHITE}Algorithm: {result['algorithm'].upper()}")
-            print(f"{Fore.WHITE}Path: {' -> '.join(result['path_phrases'])}")
-            print(f"{Fore.WHITE}Total distance: {result['total_distance']:.4f}")
-            print(f"{Fore.WHITE}Execution time: {result['execution_time']:.4f} seconds")
-            print(f"{Fore.WHITE}Nodes visited: {result['nodes_visited']}")
-            
-            print(f"\n{Fore.YELLOW}Edge details:")
-            for edge in result['edge_details']:
-                print(f"  {Fore.WHITE}{edge['from']} -> {edge['to']}: "
-                      f"distance={edge['distance']:.3f}, "
-                      f"similarity={edge['similarity']:.3f}")
+        if isinstance(result, dict):
+            # Handle dictionary result format
+            if result.get('success'):
+                print(f"{Fore.GREEN}✓ Path found!")
+                print(f"\n{Fore.WHITE}Algorithm: {result.get('algorithm', 'Unknown').upper()}")
+                
+                # Display path
+                if 'path_phrases' in result and result['path_phrases']:
+                    path_str = " → ".join(result['path_phrases'])
+                    print(f"\n{Fore.YELLOW}Path:")
+                    print(f"{Fore.WHITE}{path_str}")
+                
+                # Display metrics
+                print(f"\n{Fore.YELLOW}Metrics:")
+                print(f"{Fore.WHITE}  Total distance: {result.get('total_distance', 0):.4f}")
+                print(f"{Fore.WHITE}  Execution time: {result.get('execution_time', 0):.4f} seconds")
+                print(f"{Fore.WHITE}  Nodes visited: {result.get('nodes_visited', 0)}")
+                
+                # Display edge details
+                if 'edge_details' in result and result['edge_details']:
+                    print(f"\n{Fore.YELLOW}Edge details:")
+                    for i, edge in enumerate(result['edge_details'][:5]):  # Show first 5 edges
+                        print(f"{Fore.WHITE}  {i+1}. {edge['from']} → {edge['to']}: "
+                            f"similarity={edge['similarity']:.3f}, distance={edge['distance']:.3f}")
+                    if len(result['edge_details']) > 5:
+                        print(f"{Fore.WHITE}  ... and {len(result['edge_details']) - 5} more edges")
+            else:
+                print(f"{Fore.RED}✗ Path not found!")
+                if 'error_message' in result and result['error_message']:
+                    print(f"{Fore.RED}  Error: {result['error_message']}")
+                else:
+                    print(f"{Fore.RED}  No path exists between these phrases")
+        
+        elif hasattr(result, 'success'):  # Handle SearchResult object
+            if result.success:
+                print(f"{Fore.GREEN}✓ Path found!")
+                print(f"\n{Fore.WHITE}Algorithm: {result.algorithm.upper()}")
+                
+                # Display path
+                if hasattr(result, 'path_phrases') and result.path_phrases:
+                    path_str = " → ".join(result.path_phrases)
+                    print(f"\n{Fore.YELLOW}Path:")
+                    print(f"{Fore.WHITE}{path_str}")
+                
+                # Display metrics
+                print(f"\n{Fore.YELLOW}Metrics:")
+                print(f"{Fore.WHITE}  Total distance: {result.total_distance:.4f}")
+                print(f"{Fore.WHITE}  Execution time: {result.execution_time:.4f} seconds")
+                print(f"{Fore.WHITE}  Nodes visited: {result.nodes_visited}")
+                
+                # Display edge details
+                if hasattr(result, 'edge_details') and result.edge_details:
+                    print(f"\n{Fore.YELLOW}Edge details:")
+                    for i, edge in enumerate(result.edge_details[:5]):  # Show first 5 edges
+                        print(f"{Fore.WHITE}  {i+1}. {edge['from']} → {edge['to']}: "
+                            f"similarity={edge['similarity']:.3f}, distance={edge['distance']:.3f}")
+                    if len(result.edge_details) > 5:
+                        print(f"{Fore.WHITE}  ... and {len(result.edge_details) - 5} more edges")
+            else:
+                print(f"{Fore.RED}✗ Path not found!")
+                if hasattr(result, 'error_message') and result.error_message:
+                    print(f"{Fore.RED}  Error: {result.error_message}")
+                else:
+                    print(f"{Fore.RED}  No path exists between these phrases")
         else:
-            print(f"{Fore.RED} Error: {result.get('error_message', 'Unknown')}")
+            print(f"{Fore.RED} Invalid result format")
+        
+        print(f"{Fore.CYAN}{'='*60}")
     
     def compare_algorithms(self):
         print(f"\n{Fore.YELLOW} Compare algorithms")
+        print("="*60)
         
-        start = input(f"{Fore.GREEN}Start phrase: ").strip()
-        end = input(f"{Fore.GREEN}End phrase: ").strip()
+        # Display available phrases
+        print("\nAvailable phrases:")
+        for i, phrase in enumerate(self.system.phrases, 1):
+            print(f"{i:2}. {phrase}")
         
-        if start not in self.phrases or end not in self.phrases:
-            print(f"{Fore.RED} One of the phrases does not exist")
+        # Get start phrase - ONLY NUMBERS
+        start_input = input(f"\n{Fore.GREEN}Start phrase number: ").strip()
+        if not start_input.isdigit():
+            print(f"{Fore.RED} Error: Please enter a valid number")
             return
         
-        print(f"\n{Fore.YELLOW} Comparing...")
-        results = self.system.compare_algorithms(start, end)
+        # Get end phrase - ONLY NUMBERS
+        end_input = input(f"{Fore.GREEN}End phrase number: ").strip()
+        if not end_input.isdigit():
+            print(f"{Fore.RED} Error: Please enter a valid number")
+            return
+        
+        # Convert to indices (0-based)
+        start_idx = int(start_input) - 1
+        end_idx = int(end_input) - 1
+        
+        # Validate indices
+        if start_idx < 0 or start_idx >= len(self.system.phrases):
+            print(f"{Fore.RED} Error: Invalid start number. Please enter 1-{len(self.system.phrases)}")
+            return
+        
+        if end_idx < 0 or end_idx >= len(self.system.phrases):
+            print(f"{Fore.RED} Error: Invalid end number. Please enter 1-{len(self.system.phrases)}")
+            return
+        
+        # Get the actual phrases
+        start_phrase = self.system.phrases[start_idx]
+        end_phrase = self.system.phrases[end_idx]
+        
+        print(f"\n Selected: '{start_phrase}' → '{end_phrase}'")
+        
+        print(f"\n{Fore.YELLOW} Comparing algorithms...")
+        results = self.system.compare_algorithms(start_phrase, end_phrase)
         
         print(f"\n{Fore.CYAN}{'='*60}")
         print(f"{Fore.CYAN} Comparison Results")
@@ -239,14 +352,18 @@ class InteractiveDemo:
             print(f"\n{Fore.YELLOW}{algo_name.upper()}:")
             
             if result.get('success'):
-                print(f"{Fore.GREEN}  Success")
-                print(f"{Fore.WHITE}  Path: {' -> '.join(result['path_phrases'][:3])}...")
-                print(f"{Fore.WHITE}  Distance: {result['total_distance']:.4f}")
-                print(f"{Fore.WHITE}  Time: {result['execution_time']:.4f}s")
-                print(f"{Fore.WHITE}  Nodes: {result['nodes_visited']}")
+                print(f"{Fore.GREEN}  ✓ Success")
+                if 'path_phrases' in result and result['path_phrases']:
+                    path_preview = " → ".join(result['path_phrases'][:3])
+                    if len(result['path_phrases']) > 3:
+                        path_preview += " → ..."
+                    print(f"{Fore.WHITE}  Path: {path_preview}")
+                print(f"{Fore.WHITE}  Distance: {result.get('total_distance', 0):.4f}")
+                print(f"{Fore.WHITE}  Time: {result.get('execution_time', 0):.4f}s")
+                print(f"{Fore.WHITE}  Nodes visited: {result.get('nodes_visited', 0)}")
             else:
-                print(f"{Fore.RED}  Failed: {result.get('error_message', 'Unknown')}")
-    
+                print(f"{Fore.RED}  ✗ Failed: {result.get('error_message', 'Unknown error')}")
+        
     def show_graph_info(self):
         if not self.system.graph:
             print(f"{Fore.RED} Build the graph first")

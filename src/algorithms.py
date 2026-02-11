@@ -1,5 +1,5 @@
 import heapq
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 from dataclasses import dataclass
 import time
 import logging
@@ -20,7 +20,7 @@ class SearchResult:
         self.algorithm = ""
         self.error_message = ""
         
-        self.edge_details = []  #list(from, to, weight, similarity)
+        self.edge_details = []  # list(from, to, weight, similarity)
     
     def __repr__(self):
         if not self.success:
@@ -43,30 +43,64 @@ class SearchAlgorithms:
         self.graph_builder = graph_builder
         self.config = config
         self.semantic_model = semantic_model
-        self.graph = graph_builder.graph
-        self.adjacency = graph_builder.adjacency_matrix
-        self.phrases = graph_builder.phrases
-        
+        # Don't capture these at init time - get them fresh each time
+        self.graph = None
+        self.adjacency = None
+        self.phrases = []
+    
+    def _refresh_graph_data(self):
+        """Refresh graph data from graph_builder"""
+        self.graph = self.graph_builder.graph
+        self.adjacency = self.graph_builder.adjacency_matrix
+        self.phrases = self.graph_builder.phrases
+    
     def find_path(self, start_phrase: str, end_phrase: str, algorithm: Algorithm = None) -> SearchResult:
        
+        # Refresh graph data before each search
+        self._refresh_graph_data()
+        
         if algorithm is None:
             algorithm = self.config.default_algorithm
         
+        # Check if graph is built
+        if self.graph is None or self.adjacency is None:
+            result = SearchResult(success=False)
+            result.error_message = "Graph not built yet"
+            return result
+        
+        # Check if phrase_to_idx exists
+        if not hasattr(self.graph_builder, 'phrase_to_idx') or not self.graph_builder.phrase_to_idx:
+            result = SearchResult(success=False)
+            result.error_message = "Phrase index not available"
+            return result
+        
         if start_phrase not in self.graph_builder.phrase_to_idx:
             result = SearchResult(success=False)
-            result.error_message = f" start phrase '{start_phrase}' does not exit."
+            result.error_message = f"Start phrase '{start_phrase}' does not exist."
             return result
         
         if end_phrase not in self.graph_builder.phrase_to_idx:
             result = SearchResult(success=False)
-            result.error_message = f"end phrase '{end_phrase}' does not exist."
+            result.error_message = f"End phrase '{end_phrase}' does not exist."
             return result
         
         start_idx = self.graph_builder.phrase_to_idx[start_phrase]
         end_idx = self.graph_builder.phrase_to_idx[end_phrase]
         
-        logger.info(f"searching for path from '{start_phrase}' to '{end_phrase}'")
-        logger.info(f"algorithm used: {algorithm.value}")
+        # Validate indices
+        n = len(self.phrases)
+        if start_idx >= n or start_idx < 0:
+            result = SearchResult(success=False)
+            result.error_message = f"Start index {start_idx} out of range (0-{n-1})"
+            return result
+        
+        if end_idx >= n or end_idx < 0:
+            result = SearchResult(success=False)
+            result.error_message = f"End index {end_idx} out of range (0-{n-1})"
+            return result
+        
+        logger.info(f"Searching for path from '{start_phrase}' (idx={start_idx}) to '{end_phrase}' (idx={end_idx})")
+        logger.info(f"Algorithm used: {algorithm.value}")
         
         start_time = time.time()
         
@@ -78,19 +112,19 @@ class SearchAlgorithms:
             result = self._astar_search(start_idx, end_idx)
         else:
             result = SearchResult(success=False)
-            result.error_message = f"algorithm {algorithm} is not available"
+            result.error_message = f"Algorithm {algorithm} is not available"
         
         result.execution_time = time.time() - start_time
         result.algorithm = algorithm.value
         
         if result.success:
-            result.path_phrases = [self.phrases[i] for i in result.path]
+            result.path_phrases = [self.phrases[i] for i in result.path if i < len(self.phrases)]
             result.edge_details = self._get_edge_details(result.path)
         
-        logger.info(f"execution time: {result.execution_time:.4f} seconds")
+        logger.info(f"Execution time: {result.execution_time:.4f} seconds")
         if result.success:
-            logger.info(f"total distance: {result.total_distance:.4f}")
-            logger.info(f"visited nodes: {result.nodes_visited}")
+            logger.info(f"Total distance: {result.total_distance:.4f}")
+            logger.info(f"Visited nodes: {result.nodes_visited}")
         
         return result
     
@@ -123,7 +157,7 @@ class SearchAlgorithms:
                     queue.append(neighbor)
         
         result.success = False
-        result.error_message = "no path found"
+        result.error_message = "No path found"
         result.nodes_visited = nodes_visited
         return result
     
@@ -131,6 +165,13 @@ class SearchAlgorithms:
         result = SearchResult()
         
         n = len(self.phrases)
+        
+        # Ensure start and end are within bounds
+        if start >= n or end >= n:
+            result.success = False
+            result.error_message = f"Start ({start}) or end ({end}) index out of range (max: {n-1})"
+            return result
+        
         dist = [float('inf')] * n
         dist[start] = 0
         parent = [-1] * n
@@ -165,7 +206,7 @@ class SearchAlgorithms:
                         heapq.heappush(pq, (new_dist, neighbor))
         
         result.success = False
-        result.error_message = "no path found"
+        result.error_message = "No path found"
         result.nodes_visited = nodes_visited
         return result
     
@@ -174,7 +215,15 @@ class SearchAlgorithms:
         
         if self.semantic_model is None:
             result.success = False
-            result.error_message = "no semantic model chosen"
+            result.error_message = "No semantic model chosen for A* heuristic"
+            return result
+        
+        n = len(self.phrases)
+        
+        # Ensure start and end are within bounds
+        if start >= n or end >= n:
+            result.success = False
+            result.error_message = f"Start ({start}) or end ({end}) index out of range (max: {n-1})"
             return result
         
         def heuristic(node: int) -> float:
@@ -188,7 +237,6 @@ class SearchAlgorithms:
             
             return self.config.heuristic_weight * (1 - similarity)
         
-        n = len(self.phrases)
         g_score = [float('inf')] * n 
         g_score[start] = 0
         
@@ -225,7 +273,7 @@ class SearchAlgorithms:
                         heapq.heappush(open_set, (f_score[neighbor], neighbor))
         
         result.success = False
-        result.error_message = "no path found"
+        result.error_message = "No path found"
         result.nodes_visited = nodes_visited
         return result
     
@@ -239,7 +287,8 @@ class SearchAlgorithms:
         
         path.reverse()
         
-        if path[0] != start:
+        # Verify path starts at start
+        if not path or path[0] != start:
             return []
         
         return path
@@ -258,8 +307,8 @@ class SearchAlgorithms:
             similarity = 1 - weight
             
             details.append({
-                'from': self.phrases[from_idx],
-                'to': self.phrases[to_idx],
+                'from': self.phrases[from_idx] if from_idx < len(self.phrases) else f"Node {from_idx}",
+                'to': self.phrases[to_idx] if to_idx < len(self.phrases) else f"Node {to_idx}",
                 'from_idx': from_idx,
                 'to_idx': to_idx,
                 'weight': weight,
@@ -283,9 +332,17 @@ class SearchAlgorithms:
         
         return results
     
-    def find_k_shortest_paths(self, start: int, end: int, k: int = 3) -> List[SearchResult]: #returns list of pathes
+    def find_k_shortest_paths(self, start: int, end: int, k: int = 3) -> List[SearchResult]:
+        """Returns list of k shortest paths"""
         try:
             import networkx as nx
+            
+            # Refresh graph data
+            self._refresh_graph_data()
+            
+            if self.graph is None:
+                logger.error("Graph not built")
+                return []
             
             paths = list(nx.shortest_simple_paths(
                 self.graph, 
@@ -301,7 +358,7 @@ class SearchAlgorithms:
                 
                 result = SearchResult(success=True)
                 result.path = path
-                result.path_phrases = [self.phrases[idx] for idx in path]
+                result.path_phrases = [self.phrases[idx] for idx in path if idx < len(self.phrases)]
                 result.nodes_visited = len(path)
                 
                 total_distance = 0
@@ -315,5 +372,5 @@ class SearchAlgorithms:
             return results
             
         except Exception as e:
-            logger.error(f" could not find the k shortest path: {e}")
+            logger.error(f"Could not find k shortest paths: {e}")
             return []
