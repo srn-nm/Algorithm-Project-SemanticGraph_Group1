@@ -48,16 +48,7 @@ class GraphVisualizer:
                    title: str = "Semantic Graph", 
                    save_path: Optional[str] = None,
                    max_labels: int = 30):
-        """
-        Plot static visualization of the semantic graph
-        
-        Args:
-            graph: NetworkX graph object
-            phrases: List of node labels
-            title: Plot title
-            save_path: Optional custom save path
-            max_labels: Maximum number of labels to show
-        """
+
         try:
             # Check if graph is empty
             if graph is None or len(graph.nodes()) == 0:
@@ -479,13 +470,7 @@ class GraphVisualizer:
             plt.close('all')
     
     def plot_algorithm_comparison(self, metrics: Dict, save_path: Optional[str] = None):
-        """
-        Create algorithm comparison visualization
-        
-        Args:
-            metrics: Dictionary of PerformanceMetrics objects
-            save_path: Optional custom save path
-        """
+    
         try:
             import pandas as pd
             
@@ -506,83 +491,72 @@ class GraphVisualizer:
                 data.append({
                     'Algorithm': algo_display,
                     'Average Time (s)': metric.avg_time,
-                    'Average Distance': metric.avg_distance,
                     'Visited Nodes': metric.avg_nodes_visited,
                     'Success Rate (%)': success_rate_pct,
-                    'Speedup vs Dijkstra': metric.speedup_vs_dijkstra,
                     'Path Length': metric.avg_path_length
                 })
             
             df = pd.DataFrame(data)
             
-            # Create figure
+            # Create figure with 2x2 grid - 4 plots total
             fig, axes = plt.subplots(2, 2, figsize=(14, 10))
             
-            # 1. Execution Time
+            # 1. Execution Time (Keep)
             ax1 = axes[0, 0]
             bars1 = ax1.bar(df['Algorithm'], df['Average Time (s)'], 
-                           color='steelblue', alpha=0.8)
-            ax1.set_title('Algorithm Execution Time', fontsize=12, fontweight='bold')
-            ax1.set_ylabel('Time (seconds)')
+                        color='steelblue', alpha=0.8, edgecolor='navy', linewidth=1)
+            ax1.set_title('Average Execution Time', fontsize=12, fontweight='bold', pad=10)
+            ax1.set_ylabel('Time (seconds)', fontsize=10)
             ax1.tick_params(axis='x', rotation=45)
-            ax1.grid(True, alpha=0.3)
+            ax1.grid(True, alpha=0.3, linestyle='--')
             
             # Add value labels
             for bar, val in zip(bars1, df['Average Time (s)']):
                 ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Average Time (s)'])*0.01,
-                        f'{val:.4f}', ha='center', va='bottom', fontsize=8, rotation=45)
+                        f'{val:.4f}s', ha='center', va='bottom', fontsize=8, fontweight='bold')
             
-            # 2. Path Distance
+            # 2. Visited Nodes (Keep - renamed from Algorithm Efficiency)
             ax2 = axes[0, 1]
-            bars2 = ax2.bar(df['Algorithm'], df['Average Distance'], 
-                           color='seagreen', alpha=0.8)
-            ax2.set_title('Found Path Distance', fontsize=12, fontweight='bold')
-            ax2.set_ylabel('Distance')
+            bars2 = ax2.bar(df['Algorithm'], df['Visited Nodes'], 
+                        color='darkorange', alpha=0.8, edgecolor='darkred', linewidth=1)
+            ax2.set_title('Nodes Visited During Search', fontsize=12, fontweight='bold', pad=10)
+            ax2.set_ylabel('Number of Nodes', fontsize=10)
             ax2.tick_params(axis='x', rotation=45)
-            ax2.grid(True, alpha=0.3)
+            ax2.grid(True, alpha=0.3, linestyle='--')
             
-            for bar, val in zip(bars2, df['Average Distance']):
-                ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Average Distance'])*0.01,
-                        f'{val:.3f}', ha='center', va='bottom', fontsize=8, rotation=45)
+            for bar, val in zip(bars2, df['Visited Nodes']):
+                ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Visited Nodes'])*0.01,
+                        f'{val:.0f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
             
-            # 3. Efficiency (Visited Nodes)
+            # 3. Success Rate (Keep)
             ax3 = axes[1, 0]
-            bars3 = ax3.bar(df['Algorithm'], df['Visited Nodes'], 
-                           color='darkorange', alpha=0.8)
-            ax3.set_title('Algorithm Efficiency', fontsize=12, fontweight='bold')
-            ax3.set_ylabel('Number of Visited Nodes')
+            bars3 = ax3.bar(df['Algorithm'], df['Success Rate (%)'], 
+                        color='seagreen', alpha=0.8, edgecolor='darkgreen', linewidth=1)
+            ax3.set_title('Success Rate', fontsize=12, fontweight='bold', pad=10)
+            ax3.set_ylabel('Success Rate (%)', fontsize=10)
+            ax3.set_ylim([0, 110])
             ax3.tick_params(axis='x', rotation=45)
-            ax3.grid(True, alpha=0.3)
+            ax3.grid(True, alpha=0.3, linestyle='--')
             
-            for bar, val in zip(bars3, df['Visited Nodes']):
-                ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Visited Nodes'])*0.01,
-                        f'{val:.0f}', ha='center', va='bottom', fontsize=8, rotation=45)
+            for bar, val in zip(bars3, df['Success Rate (%)']):
+                ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2,
+                        f'{val:.1f}%', ha='center', va='bottom', fontsize=8, fontweight='bold')
             
-            # 4. Speedup vs Dijkstra
+            # 4. Path Length (Keep)
             ax4 = axes[1, 1]
-            
-            # Color bars based on performance
-            colors = []
-            for val in df['Speedup vs Dijkstra']:
-                if val > 1.1:
-                    colors.append('forestgreen')
-                elif val > 0.9:
-                    colors.append('gold')
-                else:
-                    colors.append('crimson')
-            
-            bars4 = ax4.bar(df['Algorithm'], df['Speedup vs Dijkstra'], 
-                           color=colors, alpha=0.8)
-            ax4.set_title('Relative Speed vs Dijkstra', fontsize=12, fontweight='bold')
-            ax4.set_ylabel('Speedup Factor')
-            ax4.axhline(y=1, color='red', linestyle='--', alpha=0.5, label='Dijkstra baseline')
+            bars4 = ax4.bar(df['Algorithm'], df['Path Length'], 
+                        color='purple', alpha=0.8, edgecolor='indigo', linewidth=1)
+            ax4.set_title('Average Path Length', fontsize=12, fontweight='bold', pad=10)
+            ax4.set_ylabel('Number of Nodes in Path', fontsize=10)
             ax4.tick_params(axis='x', rotation=45)
-            ax4.grid(True, alpha=0.3)
-            ax4.legend()
+            ax4.grid(True, alpha=0.3, linestyle='--')
             
-            for bar, val in zip(bars4, df['Speedup vs Dijkstra']):
-                ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Speedup vs Dijkstra'])*0.02,
-                        f'{val:.2f}x', ha='center', va='bottom', fontsize=8, rotation=45)
+            for bar, val in zip(bars4, df['Path Length']):
+                ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Path Length'])*0.01,
+                        f'{val:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
+            
+            # Overall title
+            fig.suptitle('Algorithm Performance Comparison', fontsize=16, fontweight='bold', y=1.02)
             
             plt.tight_layout()
             
@@ -592,7 +566,7 @@ class GraphVisualizer:
                 save_path = os.path.join(
                     self.results_dir, 
                     "visualizations", 
-                    f"algorithm_comparison_{timestamp}.png"
+                    f"algorithm_performance_{timestamp}.png"
                 )
             
             # Ensure directory exists
@@ -601,7 +575,7 @@ class GraphVisualizer:
             plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
             plt.close()
             
-            logger.info(f"Algorithm comparison chart saved to {save_path}")
+            logger.info(f"Algorithm performance chart saved to {save_path}")
             
             # Also save data as CSV
             csv_path = save_path.replace('.png', '.csv')

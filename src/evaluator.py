@@ -1,7 +1,7 @@
 import time
 import json
 import os
-from typing import List, Dict, Optional
+from typing import List, Dict
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass
@@ -101,7 +101,6 @@ class SystemEvaluator:
             logger.error(f"Error saving test cases: {e}")
     
     def run_performance_evaluation(self) -> Dict[str, PerformanceMetrics]:
-        """Run performance evaluation on all algorithms"""
         if not self.test_cases:
             logger.error("No test cases available for evaluation")
             return {}
@@ -142,7 +141,6 @@ class SystemEvaluator:
         
         if self.config['evaluation'].save_results:
             self._save_performance_results(metrics)
-            self._generate_performance_plots(metrics)
         
         return metrics
     
@@ -253,90 +251,6 @@ class SystemEvaluator:
             logger.info(f"Results saved to {csv_path}")
         except Exception as e:
             logger.error(f"Error saving CSV results: {e}")
-    
-    def _generate_performance_plots(self, metrics: Dict[str, PerformanceMetrics]):
-        """Generate performance visualization plots"""
-        try:
-            import matplotlib.pyplot as plt
-            import seaborn as sns
-            
-            sns.set_style("whitegrid")
-            plt.rcParams['font.family'] = 'DejaVu Sans'
-            
-            fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-            
-            algorithms = list(metrics.keys())
-            
-            # 1. Execution Time
-            avg_times = [metrics[algo].avg_time for algo in algorithms]
-            std_times = [metrics[algo].std_time for algo in algorithms]
-            
-            bars1 = axes[0, 0].bar(algorithms, avg_times, yerr=std_times, 
-                                   capsize=5, color='steelblue', alpha=0.8)
-            axes[0, 0].set_title('Average Algorithm Execution Time', fontsize=12, fontweight='bold')
-            axes[0, 0].set_ylabel('Time (seconds)')
-            axes[0, 0].tick_params(axis='x', rotation=45)
-            axes[0, 0].grid(True, alpha=0.3)
-            
-            # Add value labels on bars
-            for bar, val in zip(bars1, avg_times):
-                axes[0, 0].text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(avg_times)*0.01,
-                               f'{val:.4f}', ha='center', va='bottom', fontsize=9)
-            
-            # 2. Success Rate
-            success_rates = [metrics[algo].success_rate for algo in algorithms]
-            bars2 = axes[0, 1].bar(algorithms, success_rates, color='seagreen', alpha=0.8)
-            axes[0, 1].set_title('Algorithm Success Rate', fontsize=12, fontweight='bold')
-            axes[0, 1].set_ylabel('Success Rate')
-            axes[0, 1].set_ylim([0, 1])
-            axes[0, 1].tick_params(axis='x', rotation=45)
-            axes[0, 1].grid(True, alpha=0.3)
-            
-            for bar, val in zip(bars2, success_rates):
-                axes[0, 1].text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                               f'{val:.1%}', ha='center', va='bottom', fontsize=9)
-            
-            # 3. Nodes Visited
-            nodes_visited = [metrics[algo].avg_nodes_visited for algo in algorithms]
-            bars3 = axes[1, 0].bar(algorithms, nodes_visited, color='darkorange', alpha=0.8)
-            axes[1, 0].set_title('Average Visited Nodes', fontsize=12, fontweight='bold')
-            axes[1, 0].set_ylabel('Number of Nodes')
-            axes[1, 0].tick_params(axis='x', rotation=45)
-            axes[1, 0].grid(True, alpha=0.3)
-            
-            for bar, val in zip(bars3, nodes_visited):
-                axes[1, 0].text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(nodes_visited)*0.01,
-                               f'{val:.1f}', ha='center', va='bottom', fontsize=9)
-            
-            # 4. Speedup vs Dijkstra
-            speedups = [metrics[algo].speedup_vs_dijkstra for algo in algorithms]
-            colors = ['crimson' if s < 1 else 'forestgreen' for s in speedups]
-            bars4 = axes[1, 1].bar(algorithms, speedups, color=colors, alpha=0.8)
-            axes[1, 1].set_title('Speedup vs Dijkstra', fontsize=12, fontweight='bold')
-            axes[1, 1].set_ylabel('Speedup Factor')
-            axes[1, 1].axhline(y=1, color='red', linestyle='--', alpha=0.5, label='Dijkstra baseline')
-            axes[1, 1].tick_params(axis='x', rotation=45)
-            axes[1, 1].grid(True, alpha=0.3)
-            axes[1, 1].legend()
-            
-            for bar, val in zip(bars4, speedups):
-                axes[1, 1].text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(speedups)*0.02,
-                               f'{val:.2f}x', ha='center', va='bottom', fontsize=9)
-            
-            plt.tight_layout()
-            
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            plot_path = os.path.join(self.results_dir, "performance", 
-                                    f"plots_{timestamp}.{self.config['evaluation'].plot_format}")
-            plt.savefig(plot_path, dpi=300, bbox_inches='tight')
-            plt.close()
-            
-            logger.info(f"Performance plots saved to: {plot_path}")
-            
-        except ImportError as e:
-            logger.warning(f"Matplotlib/Seaborn not available for plotting: {e}")
-        except Exception as e:
-            logger.error(f"Error generating performance plots: {e}")
     
     def evaluate_scalability(self, max_nodes: int = 100, step: int = 10):
         """Evaluate system scalability with increasing number of nodes"""
