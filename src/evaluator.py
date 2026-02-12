@@ -82,7 +82,6 @@ class SystemEvaluator:
     def _categorize_test(self, start_idx: int, end_idx: int, phrases: List[str]) -> str:
         """Categorize test case based on semantic similarity"""
         try:
-            #  categorization logic must be implemented
             return "general"
         except Exception as e:
             logger.warning(f"Error categorizing test: {e}")
@@ -124,7 +123,6 @@ class SystemEvaluator:
                         algo_results.append(result)
                     except Exception as e:
                         logger.error(f"Error running {algo.value} on test case: {e}")
-                        # Append a failed result
                         from dataclasses import dataclass
                         @dataclass
                         class FailedResult:
@@ -260,14 +258,12 @@ class SystemEvaluator:
         import tracemalloc
         
         logger.info("Starting scalability evaluation...")
-        
-        # Import only when needed to avoid circular imports
+
         from src.graph_builder import GraphBuilder
         from src.semantic_model import SemanticModel
         
         scalability_results = []
-        
-        # Create base model config
+
         model_config = type('obj', (object,), {
             'model_name': self.config['model'].model_name,
             'device': self.config['model'].device,
@@ -275,8 +271,7 @@ class SystemEvaluator:
             'batch_size': self.config['model'].batch_size,
             'enable_cache': False
         })()
-        
-        # Create base graph config
+
         graph_config = type('obj', (object,), {
             'graph_type': self.config['graph'].graph_type,
             'threshold': self.config['graph'].threshold,
@@ -284,14 +279,12 @@ class SystemEvaluator:
             'save_graph': False,
             'project': self.config['project']
         })()
-        
-        # Initialize model once and reuse
+
         model = SemanticModel(model_config)
         
         for n in range(step, max_nodes + 1, step):
             logger.info(f"Testing scalability with {n} nodes...")
-            
-            # Generate test phrases
+
             phrases = []
             base_terms = ["algorithm", "data", "machine", "learning", "neural", 
                          "network", "deep", "artificial", "intelligence", "system"]
@@ -300,27 +293,22 @@ class SystemEvaluator:
                 base = random.choice(base_terms)
                 suffix = ''.join(random.choices(string.ascii_lowercase, k=3))
                 phrases.append(f"{base}_{i}_{suffix}")
-            
-            # Build graph and measure performance
+
             builder = GraphBuilder(model, graph_config)
-            
-            # Measure graph build time
+
             start_time = time.time()
             graph = builder.build_graph(phrases)
             graph_build_time = time.time() - start_time
-            
-            # Measure memory usage
+
             import tracemalloc
             tracemalloc.start()
-            # Force garbage collection
             import gc
             gc.collect()
             current, peak = tracemalloc.get_traced_memory()
             tracemalloc.stop()
             
             memory_usage_mb = peak / (1024 * 1024)
-            
-            # Measure search performance
+
             search_times = []
             if n > 1:
                 for _ in range(min(5, n // 2)):  # Limit iterations for large n
@@ -330,21 +318,19 @@ class SystemEvaluator:
                         end_idx = random.randint(0, n-1)
                     
                     start_time = time.time()
-                    # Test neighbor retrieval
                     builder.get_neighbors(start_idx)
                     search_time = time.time() - start_time
                     search_times.append(search_time)
             
             avg_search_time = np.mean(search_times) if search_times else 0
-            
-            # Estimate graph density
+
             num_edges = 0
             if hasattr(graph, 'edges'):
                 num_edges = len(graph.edges())
             elif isinstance(graph, dict):
                 for node in graph:
                     num_edges += len(graph.get(node, []))
-                num_edges //= 2  # Undirected graph
+                num_edges //= 2
             
             density = (2 * num_edges) / (n * (n - 1)) if n > 1 else 0
             
@@ -361,8 +347,7 @@ class SystemEvaluator:
                        f"search={avg_search_time:.6f}s, "
                        f"memory={memory_usage_mb:.2f}MB, "
                        f"edges={num_edges}, density={density:.4f}")
-        
-        # Save scalability results
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         scal_path = os.path.join(self.results_dir, "reports", f"scalability_{timestamp}.json")
         
@@ -391,22 +376,19 @@ class SystemEvaluator:
             memory_usage = [r['memory_usage_mb'] for r in results]
             
             fig, axes = plt.subplots(1, 3, figsize=(18, 5))
-            
-            # Graph Build Time Scalability
+
             axes[0].plot(nodes, build_times, 'o-', linewidth=2, color='blue', markersize=6)
             axes[0].set_xlabel('Number of Nodes', fontsize=11)
             axes[0].set_ylabel('Graph Build Time (seconds)', fontsize=11)
             axes[0].set_title('Graph Build Time Scalability', fontsize=12, fontweight='bold')
             axes[0].grid(True, alpha=0.3)
-            
-            # Add trend line
+
             z = np.polyfit(nodes, build_times, 2)
             p = np.poly1d(z)
             axes[0].plot(nodes, p(nodes), '--', color='red', alpha=0.7, 
                         label=f'O(n²) trend: {z[0]:.2e}n²')
             axes[0].legend()
-            
-            # Search Time Scalability
+
             axes[1].plot(nodes, search_times, 's-', linewidth=2, color='green', markersize=6)
             axes[1].set_xlabel('Number of Nodes', fontsize=11)
             axes[1].set_ylabel('Search Time (seconds)', fontsize=11)
@@ -419,15 +401,13 @@ class SystemEvaluator:
                 axes[1].plot(nodes, p_search(nodes), '--', color='red', alpha=0.7,
                            label=f'O(n) trend: {z_search[0]:.2e}n')
                 axes[1].legend()
-            
-            # Memory Usage Scalability
+
             axes[2].plot(nodes, memory_usage, '^-', linewidth=2, color='red', markersize=6)
             axes[2].set_xlabel('Number of Nodes', fontsize=11)
             axes[2].set_ylabel('Memory Usage (MB)', fontsize=11)
             axes[2].set_title('Memory Usage Scalability', fontsize=12, fontweight='bold')
             axes[2].grid(True, alpha=0.3)
-            
-            # Add memory complexity annotation
+
             axes[2].annotate('O(n²) complexity', xy=(0.7, 0.9), xycoords='axes fraction',
                            fontsize=10, bbox=dict(boxstyle="round,pad=0.3", 
                                                  facecolor="yellow", alpha=0.2))
