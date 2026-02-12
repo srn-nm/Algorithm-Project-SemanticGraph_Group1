@@ -1,4 +1,4 @@
-# Semantic model module using Sentence Transformers - محاسبه شباهت معنایی
+"""Semantic model module using Sentence Transformers"""
 
 import numpy as np
 from typing import List, Tuple
@@ -26,15 +26,13 @@ class SemanticModel:
         self.model = None
         self.cache = {}
         self.cache_file = os.path.join(config.cache_dir, "similarity_cache.json")
-        
-        # making the cache folder
+
         os.makedirs(config.cache_dir, exist_ok=True)
         
         self._load_cache()
         self._load_model()
     
     def _load_model(self):
-        #Loading Sentence Transformers
         try:
             from sentence_transformers import SentenceTransformer, util
             
@@ -85,8 +83,7 @@ class SemanticModel:
                 self.cache[cache_key] = similarity
                 if len(self.cache) % 100 == 0:
                     self._save_cache()
-        
-        # semantic distance
+
         distance = 1 - similarity
         
         return SimilarityResult(
@@ -109,8 +106,7 @@ class SemanticModel:
             
             cosine_score = self.util.cos_sim(embeddings[0], embeddings[1])
             similarity = float(cosine_score[0][0])
-            
-            # turning the numbers to fit in [0,1]
+
             similarity = (similarity + 1) / 2
             similarity = max(0.0, min(1.0, similarity))
             
@@ -121,7 +117,6 @@ class SemanticModel:
             return 0
     
     def compute_batch_similarities(self, text_pairs: List[Tuple[str, str]]) -> List[SimilarityResult]:
-        # computing in groups
         results = []
         
         for text1, text2 in tqdm(text_pairs, desc="computing similarities"):
@@ -143,7 +138,6 @@ class SemanticModel:
         
         similarity_matrix = self.util.cos_sim(embeddings, embeddings)
 
-        # converting to numpy and normalizing
         similarity_matrix = similarity_matrix.cpu().numpy()
         similarity_matrix = (similarity_matrix + 1) / 2
         similarity_matrix = np.clip(similarity_matrix, 0, 1)
