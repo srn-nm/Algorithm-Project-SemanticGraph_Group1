@@ -1,5 +1,6 @@
-# semantic graph builder module
-
+"""
+semantic graph builder module
+"""
 import datetime
 import numpy as np
 import networkx as nx
@@ -35,13 +36,10 @@ class GraphBuilder:
         self.adjacency_matrix = None
         self.phrases = []
         self.phrase_to_idx = {}
-        
-        # Handle config access - support both object and dict styles
+
         if hasattr(config, 'project'):
-            # Object-style access (like in config.py)
             self.results_dir = config.project.results_dir
         elif isinstance(config, dict):
-            # Dict-style access (like in main.py)
             if 'project' in config:
                 if hasattr(config['project'], 'results_dir'):
                     self.results_dir = config['project'].results_dir
@@ -67,8 +65,7 @@ class GraphBuilder:
         
         logger.info("Calculating similarity matrix...")
         similarity_matrix = self.model.compute_similarity_matrix(phrases)
-        
-        # Create graph based on the type chosen
+
         if self.config.graph_type == GraphType.FULLY_CONNECTED:
             self._build_fully_connected(similarity_matrix)
         elif self.config.graph_type == GraphType.THRESHOLD_BASED:
@@ -78,14 +75,12 @@ class GraphBuilder:
         else:
             logger.warning(f"Unknown graph type: {self.config.graph_type}, using threshold based")
             self._build_threshold_based(similarity_matrix)
-        
-        # Create NetworkX graph
+
         self.graph = self._create_networkx_graph()
         
         metrics = self._calculate_metrics()
         self._log_metrics(metrics)
-        
-        # Check if we should save the graph
+
         should_save = False
         if hasattr(self.config, 'save_graph'):
             should_save = self.config.save_graph
@@ -129,17 +124,14 @@ class GraphBuilder:
         edge_count = 0
         
         for i in range(n):
-            # Create a copy to avoid modifying the original matrix
             similarities = similarity_matrix[i].copy()
-            
-            # Remove self-similarity
+
             similarities[i] = -1
-            
-            # Get top k indices
+
             top_k_indices = np.argsort(similarities)[-k:][::-1]
             
             for j in top_k_indices:
-                if similarities[j] >= 0:  # Only add valid edges
+                if similarities[j] >= 0:
                     weight = 1 - similarity_matrix[i][j]
                     self.adjacency_matrix[i][j] = weight
                     edge_count += 1
@@ -149,12 +141,10 @@ class GraphBuilder:
     def _create_networkx_graph(self) -> nx.Graph:
         """Convert adjacency matrix to NetworkX graph"""
         G = nx.Graph()
-        
-        # Add nodes
+
         for i, phrase in enumerate(self.phrases):
             G.add_node(i, label=phrase, phrase=phrase)
-        
-        # Add edges
+
         n = len(self.phrases)
         for i in range(n):
             for j in range(i + 1, n):
@@ -232,37 +222,31 @@ class GraphBuilder:
         """Save graph to disk - NetworkX 3.0+ compatible"""
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"semantic_graph_{timestamp}"
-        
-        # Create graphs directory
+
         graphs_dir = os.path.join(self.results_dir, "graphs")
         os.makedirs(graphs_dir, exist_ok=True)
-        
-        # OPTION 1: Save as GraphML (recommended for NetworkX 3.0+)
+
         graphml_path = os.path.join(graphs_dir, f"{filename}.graphml")
         try:
             nx.write_graphml(self.graph, graphml_path)
             logger.info(f"Graph saved as GraphML to {graphml_path}")
         except Exception as e:
             logger.warning(f"Could not save as GraphML: {e}")
-        
-        # OPTION 2: Save as GEXF (alternative format)
+
         gexf_path = os.path.join(graphs_dir, f"{filename}.gexf")
         try:
             nx.write_gexf(self.graph, gexf_path)
             logger.info(f"Graph saved as GEXF to {gexf_path}")
         except Exception as e:
             logger.warning(f"Could not save as GEXF: {e}")
-        
-        # OPTION 3: Save as JSON (most compatible)
+
         json_path = os.path.join(graphs_dir, f"{filename}.json")
         try:
-            # Convert graph to JSON-serializable format
             graph_data = {
                 "nodes": [],
                 "edges": []
             }
-            
-            # Add nodes
+
             for node in self.graph.nodes():
                 node_data = {
                     "id": node,
@@ -270,8 +254,7 @@ class GraphBuilder:
                     "phrase": self.phrases[node] if node < len(self.phrases) else f"Node {node}"
                 }
                 graph_data["nodes"].append(node_data)
-            
-            # Add edges
+
             for u, v, data in self.graph.edges(data=True):
                 edge_data = {
                     "source": u,
@@ -288,13 +271,10 @@ class GraphBuilder:
             logger.info(f"Graph saved as JSON to {json_path}")
         except Exception as e:
             logger.warning(f"Could not save as JSON: {e}")
-        
-        # Save adjacency matrix
         adj_path = os.path.join(graphs_dir, f"{filename}_adjacency.npy")
         np.save(adj_path, self.adjacency_matrix)
         logger.info(f"Adjacency matrix saved to {adj_path}")
-        
-        # Save metadata
+
         meta = {
             "phrases": self.phrases,
             "phrase_to_idx": self.phrase_to_idx,
@@ -320,8 +300,7 @@ class GraphBuilder:
     
     def load_graph(self, path: str) -> Optional[nx.Graph]:
         """Load graph from disk - supports multiple formats"""
-        
-        # Try different formats
+
         loaders = [
             ('.graphml', nx.read_graphml),
             ('.gexf', nx.read_gexf),
@@ -337,8 +316,7 @@ class GraphBuilder:
                     return self.graph
                 except Exception as e:
                     logger.warning(f"Failed to load {path}: {e}")
-        
-        # If no extension matches or all loaders failed, try to determine format
+
         for ext, loader in loaders:
             try_path = path + ext if not path.endswith(ext) else path
             if os.path.exists(try_path):
@@ -358,15 +336,13 @@ class GraphBuilder:
             graph_data = json.load(f)
         
         G = nx.Graph()
-        
-        # Add nodes
+
         for node_data in graph_data.get('nodes', []):
             node_id = node_data['id']
             G.add_node(node_id, 
                       label=node_data.get('label', f"Node {node_id}"),
                       phrase=node_data.get('phrase', f"Node {node_id}"))
-        
-        # Add edges
+
         for edge_data in graph_data.get('edges', []):
             G.add_edge(edge_data['source'], 
                       edge_data['target'],
@@ -392,8 +368,7 @@ class GraphBuilder:
         for neighbor in neighbors:
             weight = self.graph[node_idx][neighbor]['weight']
             neighbor_weights.append((neighbor, weight))
-        
-        # Sort by weight (ascending - closer neighbors first)
+
         neighbor_weights.sort(key=lambda x: x[1])
         
         if max_neighbors and max_neighbors > 0:
