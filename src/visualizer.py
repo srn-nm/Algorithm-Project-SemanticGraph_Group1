@@ -14,18 +14,13 @@ class GraphVisualizer:
     def __init__(self, config):
         """
         Initialize the GraphVisualizer
-        
-        Args:
-            config: Configuration object or dictionary
+
         """
         self.config = config
-        
-        # Handle both object-style and dict-style config access
+
         if hasattr(config, 'project'):
-            # Object-style access
             self.results_dir = config.project.results_dir
         elif isinstance(config, dict):
-            # Dict-style access
             if 'project' in config:
                 if hasattr(config['project'], 'results_dir'):
                     self.results_dir = config['project'].results_dir
@@ -36,10 +31,8 @@ class GraphVisualizer:
             else:
                 self.results_dir = './results'
         else:
-            # Fallback
             self.results_dir = './results'
-        
-        # Create visualizations directory
+
         viz_dir = os.path.join(self.results_dir, "visualizations")
         os.makedirs(viz_dir, exist_ok=True)
         logger.info(f"Visualizations will be saved to: {viz_dir}")
@@ -50,29 +43,24 @@ class GraphVisualizer:
                    max_labels: int = 30):
 
         try:
-            # Check if graph is empty
             if graph is None or len(graph.nodes()) == 0:
                 logger.warning("Empty graph - nothing to visualize")
                 return
             
             plt.figure(figsize=(12, 10))
-            
-            # Generate layout
+
             if len(graph.nodes()) > 100:
                 pos = nx.spring_layout(graph, k=2, iterations=30, seed=42)
             else:
                 pos = nx.spring_layout(graph, k=1, iterations=50, seed=42)
-            
-            # Node colors based on degree
+
             node_colors = []
             for node in graph.nodes():
                 degree = graph.degree(node)
                 node_colors.append(degree)
-            
-            # Node sizes based on degree
+
             node_sizes = [200 + 20 * graph.degree(node) for node in graph.nodes()]
-            
-            # Draw nodes
+
             nodes = nx.draw_networkx_nodes(
                 graph, pos,
                 node_color=node_colors,
@@ -82,12 +70,10 @@ class GraphVisualizer:
                 vmin=min(node_colors) if node_colors else 0,
                 vmax=max(node_colors) if node_colors else 1
             )
-            
-            # Draw edges if they exist
+
             if graph.edges():
                 edge_weights = []
                 for u, v in graph.edges():
-                    # Get weight, default to 0.5 if not present
                     weight = graph[u][v].get('weight', 0.5)
                     edge_weights.append(weight)
                 
@@ -107,13 +93,12 @@ class GraphVisualizer:
                         alpha=edge_alphas,
                         edge_color='gray'
                     )
-            
-            # Draw labels for small to medium graphs
+
             if len(graph.nodes()) <= max_labels:
                 labels = {}
                 for i in graph.nodes():
                     if i < len(phrases):
-                        # Truncate long phrases
+
                         label = phrases[i]
                         if len(label) > 20:
                             label = label[:17] + "..."
@@ -128,7 +113,6 @@ class GraphVisualizer:
                     font_family='DejaVu Sans'
                 )
             else:
-                # Add info text for large graphs
                 plt.text(0.02, 0.98, 
                         f"Nodes: {len(graph.nodes())}\nEdges: {len(graph.edges())}",
                         transform=plt.gca().transAxes,
@@ -138,15 +122,13 @@ class GraphVisualizer:
             
             plt.title(f"{title}\n({len(graph.nodes())} nodes, {len(graph.edges())} edges)", 
                      fontsize=14, fontweight='bold')
-            
-            # Add colorbar if nodes were drawn
+
             if nodes is not None:
                 plt.colorbar(nodes, label='Node Degree')
             
             plt.axis('off')
             plt.tight_layout()
-            
-            # Generate save path if not provided
+
             if save_path is None:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 save_path = os.path.join(
@@ -154,8 +136,7 @@ class GraphVisualizer:
                     "visualizations", 
                     f"graph_{timestamp}.png"
                 )
-            
-            # Ensure directory exists
+
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             
             plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
@@ -170,19 +151,16 @@ class GraphVisualizer:
     def plot_interactive_graph(self, graph: nx.Graph, phrases: List[str], title: str = "Interactive Semantic Graph", save_path: Optional[str] = None):
         try:
             import plotly.graph_objects as go
-            
-            # Check if graph is empty
+
             if graph is None or len(graph.nodes()) == 0:
                 logger.warning("Empty graph - cannot create interactive visualization")
                 return None
-            
-            # Generate layout
+
             if len(graph.nodes()) > 100:
                 pos = nx.spring_layout(graph, k=2, iterations=30, seed=42)
             else:
                 pos = nx.spring_layout(graph, k=1, iterations=50, seed=42)
-            
-            # Prepare edge traces
+
             edge_x = []
             edge_y = []
             edge_text = []
@@ -190,8 +168,7 @@ class GraphVisualizer:
             for edge in graph.edges():
                 x0, y0 = pos[edge[0]]
                 x1, y1 = pos[edge[1]]
-                
-                # Get weight with default
+
                 weight = graph[edge[0]][edge[1]].get('weight', 0.5)
                 similarity = 1 - weight
                 
@@ -208,8 +185,7 @@ class GraphVisualizer:
                 hovertext=edge_text,
                 name='Edges'
             )
-            
-            # Prepare node data
+
             node_x = []
             node_y = []
             node_degrees = []
@@ -221,11 +197,9 @@ class GraphVisualizer:
                 node_y.append(pos[node][1])
                 degree = graph.degree(node)
                 node_degrees.append(degree)
-                
-                # Create detailed hover text
+
                 if node < len(phrases):
                     label = phrases[node]
-                    # Get neighbors for additional info
                     neighbors = list(graph.neighbors(node))[:3]
                     neighbor_names = []
                     for n in neighbors:
@@ -246,13 +220,11 @@ class GraphVisualizer:
                     hover_text = f"<b>{label}</b><br>Degree: {degree}"
                 
                 node_text.append(hover_text)
-                
-                # Truncate label for display
+
                 if len(label) > 15:
                     label = label[:12] + "..."
                 node_labels.append(label)
-            
-            # FIXED: Removed 'titleside' and properly configured colorbar
+
             node_trace = go.Scatter(
                 x=node_x, y=node_y,
                 mode='markers+text',
@@ -278,8 +250,7 @@ class GraphVisualizer:
                 hovertext=node_text,
                 name='Nodes'
             )
-            
-            # Create figure
+
             fig = go.Figure(data=[edge_trace, node_trace],
                         layout=go.Layout(
                             title=dict(
@@ -294,8 +265,7 @@ class GraphVisualizer:
                             plot_bgcolor='white',
                             paper_bgcolor='white'
                         ))
-            
-            # Generate save path if not provided
+
             if save_path is None:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 save_path = os.path.join(
@@ -303,8 +273,6 @@ class GraphVisualizer:
                     "visualizations", 
                     f"interactive_graph_{timestamp}.html"
                 )
-            
-            # Ensure directory exists
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             
             fig.write_html(save_path)
@@ -340,8 +308,6 @@ class GraphVisualizer:
             if not path or len(path) < 2:
                 logger.warning("Path too short to visualize")
                 return
-            
-            # Validate path indices
             valid_path = []
             for node in path:
                 if node in graph.nodes():
@@ -354,22 +320,19 @@ class GraphVisualizer:
                 return
             
             plt.figure(figsize=(12, 10))
-            
-            # Generate layout
+
             if len(graph.nodes()) > 100:
                 pos = nx.spring_layout(graph, k=2, iterations=30, seed=42)
             else:
                 pos = nx.spring_layout(graph, k=1, iterations=50, seed=42)
-            
-            # Draw all nodes with low opacity
+
             nx.draw_networkx_nodes(
                 graph, pos,
                 node_color='lightgray',
                 node_size=100,
                 alpha=0.3
             )
-            
-            # Draw all edges with low opacity
+
             if graph.edges():
                 nx.draw_networkx_edges(
                     graph, pos,
@@ -378,8 +341,7 @@ class GraphVisualizer:
                     edge_color='gray',
                     style='dashed'
                 )
-            
-            # Highlight path nodes
+
             path_subgraph = graph.subgraph(valid_path)
             nx.draw_networkx_nodes(
                 path_subgraph, pos,
@@ -387,8 +349,7 @@ class GraphVisualizer:
                 node_size=300,
                 alpha=0.9
             )
-            
-            # Draw path edges
+
             path_edges = []
             for i in range(len(valid_path)-1):
                 if graph.has_edge(valid_path[i], valid_path[i+1]):
@@ -402,8 +363,7 @@ class GraphVisualizer:
                     alpha=0.8,
                     edge_color='red'
                 )
-            
-            # Add labels for path nodes
+
             path_labels = {}
             for i, node in enumerate(valid_path):
                 if node < len(phrases):
@@ -421,8 +381,7 @@ class GraphVisualizer:
                 font_weight='bold',
                 font_family='DejaVu Sans'
             )
-            
-            # Add path information
+
             path_length = len(valid_path)
             total_distance = 0
             for u, v in path_edges:
@@ -444,8 +403,7 @@ class GraphVisualizer:
             plt.title(f"{title}", fontsize=14, fontweight='bold')
             plt.axis('off')
             plt.tight_layout()
-            
-            # Generate save path
+
             if save_path is None:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 # Clean filenames
@@ -456,8 +414,7 @@ class GraphVisualizer:
                     "visualizations", 
                     f"path_{start_str}_to_{end_str}_{timestamp}.png"
                 )
-            
-            # Ensure directory exists
+
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             
             plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
@@ -473,19 +430,15 @@ class GraphVisualizer:
     
         try:
             import pandas as pd
-            
-            # Check if metrics is empty
+
             if not metrics:
                 logger.warning("No metrics to plot")
                 return
-            
-            # Convert to DataFrame
+
             data = []
             for algo_name, metric in metrics.items():
-                # Format algorithm name
                 algo_display = algo_name.upper()
-                
-                # Convert success rate to percentage
+
                 success_rate_pct = metric.success_rate * 100 if hasattr(metric, 'success_rate') else 0
                 
                 data.append({
@@ -497,11 +450,9 @@ class GraphVisualizer:
                 })
             
             df = pd.DataFrame(data)
-            
-            # Create figure with 2x2 grid - 4 plots total
+
             fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-            
-            # 1. Execution Time (Keep)
+
             ax1 = axes[0, 0]
             bars1 = ax1.bar(df['Algorithm'], df['Average Time (s)'], 
                         color='steelblue', alpha=0.8, edgecolor='navy', linewidth=1)
@@ -509,13 +460,11 @@ class GraphVisualizer:
             ax1.set_ylabel('Time (seconds)', fontsize=10)
             ax1.tick_params(axis='x', rotation=45)
             ax1.grid(True, alpha=0.3, linestyle='--')
-            
-            # Add value labels
+
             for bar, val in zip(bars1, df['Average Time (s)']):
                 ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Average Time (s)'])*0.01,
                         f'{val:.4f}s', ha='center', va='bottom', fontsize=8, fontweight='bold')
-            
-            # 2. Visited Nodes (Keep - renamed from Algorithm Efficiency)
+
             ax2 = axes[0, 1]
             bars2 = ax2.bar(df['Algorithm'], df['Visited Nodes'], 
                         color='darkorange', alpha=0.8, edgecolor='darkred', linewidth=1)
@@ -527,8 +476,7 @@ class GraphVisualizer:
             for bar, val in zip(bars2, df['Visited Nodes']):
                 ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Visited Nodes'])*0.01,
                         f'{val:.0f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
-            
-            # 3. Success Rate (Keep)
+
             ax3 = axes[1, 0]
             bars3 = ax3.bar(df['Algorithm'], df['Success Rate (%)'], 
                         color='seagreen', alpha=0.8, edgecolor='darkgreen', linewidth=1)
@@ -541,8 +489,7 @@ class GraphVisualizer:
             for bar, val in zip(bars3, df['Success Rate (%)']):
                 ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2,
                         f'{val:.1f}%', ha='center', va='bottom', fontsize=8, fontweight='bold')
-            
-            # 4. Path Length (Keep)
+
             ax4 = axes[1, 1]
             bars4 = ax4.bar(df['Algorithm'], df['Path Length'], 
                         color='purple', alpha=0.8, edgecolor='indigo', linewidth=1)
@@ -554,13 +501,11 @@ class GraphVisualizer:
             for bar, val in zip(bars4, df['Path Length']):
                 ax4.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(df['Path Length'])*0.01,
                         f'{val:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
-            
-            # Overall title
+
             fig.suptitle('Algorithm Performance Comparison', fontsize=16, fontweight='bold', y=1.02)
             
             plt.tight_layout()
-            
-            # Generate save path
+
             if save_path is None:
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 save_path = os.path.join(
@@ -568,16 +513,14 @@ class GraphVisualizer:
                     "visualizations", 
                     f"algorithm_performance_{timestamp}.png"
                 )
-            
-            # Ensure directory exists
+
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             
             plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
             plt.close()
             
             logger.info(f"Algorithm performance chart saved to {save_path}")
-            
-            # Also save data as CSV
+
             csv_path = save_path.replace('.png', '.csv')
             df.to_csv(csv_path, index=False)
             logger.info(f"Comparison data saved to {csv_path}")

@@ -20,7 +20,7 @@ class SearchResult:
         self.algorithm = ""
         self.error_message = ""
         
-        self.edge_details = []  # list(from, to, weight, similarity)
+        self.edge_details = []
     
     def __repr__(self):
         if not self.success:
@@ -43,7 +43,6 @@ class SearchAlgorithms:
         self.graph_builder = graph_builder
         self.config = config
         self.semantic_model = semantic_model
-        # Don't capture these at init time - get them fresh each time
         self.graph = None
         self.adjacency = None
         self.phrases = []
@@ -55,20 +54,17 @@ class SearchAlgorithms:
         self.phrases = self.graph_builder.phrases
     
     def find_path(self, start_phrase: str, end_phrase: str, algorithm: Algorithm = None) -> SearchResult:
-       
-        # Refresh graph data before each search
+
         self._refresh_graph_data()
         
         if algorithm is None:
             algorithm = self.config.default_algorithm
-        
-        # Check if graph is built
+
         if self.graph is None or self.adjacency is None:
             result = SearchResult(success=False)
             result.error_message = "Graph not built yet"
             return result
-        
-        # Check if phrase_to_idx exists
+
         if not hasattr(self.graph_builder, 'phrase_to_idx') or not self.graph_builder.phrase_to_idx:
             result = SearchResult(success=False)
             result.error_message = "Phrase index not available"
@@ -86,8 +82,7 @@ class SearchAlgorithms:
         
         start_idx = self.graph_builder.phrase_to_idx[start_phrase]
         end_idx = self.graph_builder.phrase_to_idx[end_phrase]
-        
-        # Validate indices
+
         n = len(self.phrases)
         if start_idx >= n or start_idx < 0:
             result = SearchResult(success=False)
@@ -165,8 +160,7 @@ class SearchAlgorithms:
         result = SearchResult()
         
         n = len(self.phrases)
-        
-        # Ensure start and end are within bounds
+
         if start >= n or end >= n:
             result.success = False
             result.error_message = f"Start ({start}) or end ({end}) index out of range (max: {n-1})"
@@ -219,8 +213,7 @@ class SearchAlgorithms:
             return result
         
         n = len(self.phrases)
-        
-        # Ensure start and end are within bounds
+
         if start >= n or end >= n:
             result.success = False
             result.error_message = f"Start ({start}) or end ({end}) index out of range (max: {n-1})"
@@ -286,8 +279,7 @@ class SearchAlgorithms:
             current = parent[current]
         
         path.reverse()
-        
-        # Verify path starts at start
+
         if not path or path[0] != start:
             return []
         
