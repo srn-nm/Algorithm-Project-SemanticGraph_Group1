@@ -116,26 +116,24 @@ class GraphBuilder:
                     edge_count += 1
         
         logger.info(f"Threshold-based graph with {edge_count} edges (threshold={self.config.threshold})")
-    
+
     def _build_top_k(self, similarity_matrix: np.ndarray):
         """Build graph with top-k most similar neighbors"""
         n = len(self.phrases)
         k = min(self.config.top_k, n - 1)
         edge_count = 0
-        
+
         for i in range(n):
             similarities = similarity_matrix[i].copy()
-
             similarities[i] = -1
+            top_k_indices = np.argpartition(similarities, -k)[-k:]
+            top_k_indices = top_k_indices[np.argsort(similarities[top_k_indices])][::-1]
 
-            top_k_indices = np.argsort(similarities)[-k:][::-1]
-            
             for j in top_k_indices:
-                if similarities[j] >= 0:
-                    weight = 1 - similarity_matrix[i][j]
-                    self.adjacency_matrix[i][j] = weight
-                    edge_count += 1
-        
+                weight = 1 - similarity_matrix[i][j]
+                self.adjacency_matrix[i][j] = weight
+                edge_count += 1
+
         logger.info(f"Top-{k} graph with {edge_count} edges")
     
     def _create_networkx_graph(self) -> nx.Graph:
@@ -289,7 +287,7 @@ class GraphBuilder:
                 "num_edges": self.graph.number_of_edges(),
                 "density": nx.density(self.graph)
             },
-            "saved_formats": ["adjacency", "json"]  # Add more formats as they succeed
+            "saved_formats": ["adjacency", "json"]
         }
         
         meta_path = os.path.join(graphs_dir, f"{filename}_meta.json")
@@ -304,7 +302,7 @@ class GraphBuilder:
         loaders = [
             ('.graphml', nx.read_graphml),
             ('.gexf', nx.read_gexf),
-            ('.gpickle', nx.read_gpickle),  # For older NetworkX versions
+            ('.gpickle', nx.read_gpickle),
             ('.json', self._load_graph_from_json)
         ]
         
