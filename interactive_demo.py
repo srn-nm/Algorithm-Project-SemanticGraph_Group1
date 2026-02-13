@@ -166,19 +166,16 @@ class InteractiveDemo:
         print("\n" + "="*60)
         print(" Semantic path search")
         print("="*60)
-        
-        # Display available phrases
+
         print("\nAvailable phrases:")
         for i, phrase in enumerate(self.system.phrases, 1):
             print(f"{i:2}. {phrase}")
-        
-        # Get start phrase - ONLY NUMBERS
+
         start_input = input("\nStart phrase number: ").strip()
         if not start_input.isdigit():
             print(" Error: Please enter a valid number")
             return
-        
-        # Get end phrase - ONLY NUMBERS
+
         end_input = input("End phrase number: ").strip()
         if not end_input.isdigit():
             print(" Error: Please enter a valid number")
