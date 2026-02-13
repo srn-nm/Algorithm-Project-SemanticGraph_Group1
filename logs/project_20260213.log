@@ -1,0 +1,137 @@
+2026-02-13 12:30:35,198 - main - INFO -  Initializing Semantic Graph Search system...
+2026-02-13 12:31:17,356 - src.semantic_model - INFO - loading model all-MiniLM-L6-v2...
+2026-02-13 12:31:17,358 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-02-13 12:31:18,483 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:18,590 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:18,840 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:18,949 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:19,190 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:19,308 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:19,558 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:19,670 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/README.md "HTTP/1.1 200 OK"
+2026-02-13 12:31:19,942 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:20,064 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:20,304 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:20,410 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/sentence_bert_config.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:20,660 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-02-13 12:31:20,661 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-02-13 12:31:21,119 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:21,237 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:21,893 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:22,000 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:22,221 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:22,338 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:22,602 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-02-13 12:31:22,821 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-02-13 12:31:23,340 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:31:23,514 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
+2026-02-13 12:31:23,759 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2 "HTTP/1.1 200 OK"
+2026-02-13 12:31:23,770 - src.semantic_model - INFO - model loaded successfully
+2026-02-13 12:31:23,774 - src.visualizer - INFO - Visualizations will be saved to: ./results\visualizations
+2026-02-13 12:31:23,774 - main - INFO -  System initialized successfully
+2026-02-13 12:31:23,774 - main - INFO -  Starting graph construction with 20 phrases...
+2026-02-13 12:31:23,774 - src.graph_builder - INFO - Building semantic graph with 20 nodes using type: fully_connected
+2026-02-13 12:31:23,775 - src.graph_builder - INFO - Calculating similarity matrix...
+2026-02-13 12:31:24,001 - src.graph_builder - INFO - Fully connected graph with 190 edges
+2026-02-13 12:31:24,005 - src.graph_builder - INFO - ==================================================
+2026-02-13 12:31:24,005 - src.graph_builder - INFO - Graph Metrics:
+2026-02-13 12:31:24,005 - src.graph_builder - INFO - ==================================================
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Number of nodes: 20
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Number of edges: 190
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Density: 1.0000
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Average degree: 19.00
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Maximum degree: 19
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Minimum degree: 19
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Average weight: 0.3305
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Connected: Yes
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Number of components: 1
+2026-02-13 12:31:24,006 - src.graph_builder - INFO -   Average clustering: 1.0000
+2026-02-13 12:31:24,007 - src.graph_builder - INFO - ==================================================
+2026-02-13 12:31:24,017 - src.graph_builder - INFO - Graph saved as GraphML to ./results\graphs\semantic_graph_20260213_123124.graphml
+2026-02-13 12:31:24,026 - src.graph_builder - INFO - Graph saved as GEXF to ./results\graphs\semantic_graph_20260213_123124.gexf
+2026-02-13 12:31:24,032 - src.graph_builder - INFO - Graph saved as JSON to ./results\graphs\semantic_graph_20260213_123124.json
+2026-02-13 12:31:24,033 - src.graph_builder - INFO - Adjacency matrix saved to ./results\graphs\semantic_graph_20260213_123124_adjacency.npy
+2026-02-13 12:31:24,035 - src.graph_builder - INFO - Metadata saved to ./results\graphs\semantic_graph_20260213_123124_meta.json
+2026-02-13 12:31:24,035 - main - INFO -  Graph built successfully
+2026-02-13 12:33:38,621 - src.algorithms - INFO - Searching for path from 'Laptop' (idx=16) to 'Programming' (idx=17)
+2026-02-13 12:33:38,622 - src.algorithms - INFO - Algorithm used: bfs
+2026-02-13 12:33:38,622 - src.algorithms - INFO - Execution time: 0.0000 seconds
+2026-02-13 12:33:38,622 - src.algorithms - INFO - Total distance: 1.0000
+2026-02-13 12:33:38,622 - src.algorithms - INFO - Visited nodes: 18
+2026-02-13 12:33:41,388 - src.visualizer - INFO - Path visualization saved to ./results\visualizations\path_Laptop_to_Programming_20260213_123340.png
+2026-02-13 12:34:35,627 - src.algorithms - INFO - Searching for path from 'Laptop' (idx=16) to 'Algorithm' (idx=18)
+2026-02-13 12:34:35,628 - src.algorithms - INFO - Algorithm used: bfs
+2026-02-13 12:34:35,628 - src.algorithms - INFO - Execution time: 0.0000 seconds
+2026-02-13 12:34:35,629 - src.algorithms - INFO - Total distance: 1.0000
+2026-02-13 12:34:35,629 - src.algorithms - INFO - Visited nodes: 19
+2026-02-13 12:34:35,629 - src.algorithms - INFO - Searching for path from 'Laptop' (idx=16) to 'Algorithm' (idx=18)
+2026-02-13 12:34:35,629 - src.algorithms - INFO - Algorithm used: dijkstra
+2026-02-13 12:34:35,630 - src.algorithms - INFO - Execution time: 0.0010 seconds
+2026-02-13 12:34:35,630 - src.algorithms - INFO - Total distance: 0.4076
+2026-02-13 12:34:35,630 - src.algorithms - INFO - Visited nodes: 16
+2026-02-13 12:34:35,630 - src.algorithms - INFO - Searching for path from 'Laptop' (idx=16) to 'Algorithm' (idx=18)
+2026-02-13 12:34:35,630 - src.algorithms - INFO - Algorithm used: astar
+2026-02-13 12:34:36,196 - src.algorithms - INFO - Execution time: 0.5668 seconds
+2026-02-13 12:34:36,197 - src.algorithms - INFO - Total distance: 0.4076
+2026-02-13 12:34:36,197 - src.algorithms - INFO - Visited nodes: 2
+2026-02-13 12:35:27,665 - src.algorithms - INFO - Searching for path from 'Computer' (idx=15) to 'iPhone' (idx=13)
+2026-02-13 12:35:27,665 - src.algorithms - INFO - Algorithm used: astar
+2026-02-13 12:35:28,177 - src.algorithms - INFO - Execution time: 0.5123 seconds
+2026-02-13 12:35:28,177 - src.algorithms - INFO - Total distance: 0.2650
+2026-02-13 12:35:28,177 - src.algorithms - INFO - Visited nodes: 2
+2026-02-13 12:35:29,270 - src.visualizer - INFO - Path visualization saved to ./results\visualizations\path_Computer_to_iPhone_20260213_123528.png
+2026-02-13 12:49:40,932 - main - INFO -  Initializing Semantic Graph Search system...
+2026-02-13 12:49:53,325 - src.semantic_model - INFO - loading model all-MiniLM-L6-v2...
+2026-02-13 12:49:53,326 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2026-02-13 12:49:54,848 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:54,848 - huggingface_hub.utils._http - WARNING - Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-02-13 12:49:55,089 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json "HTTP/1.1 200 OK"
+2026-02-13 12:49:55,570 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:55,814 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-02-13 12:49:56,297 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:56,537 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json "HTTP/1.1 200 OK"
+2026-02-13 12:49:57,020 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:57,261 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/README.md "HTTP/1.1 200 OK"
+2026-02-13 12:49:57,743 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:57,984 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json "HTTP/1.1 200 OK"
+2026-02-13 12:49:58,466 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:58,708 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/sentence_bert_config.json "HTTP/1.1 200 OK"
+2026-02-13 12:49:59,194 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-02-13 12:49:59,672 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:49:59,913 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json "HTTP/1.1 200 OK"
+2026-02-13 12:50:00,636 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:50:00,877 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json "HTTP/1.1 200 OK"
+2026-02-13 12:50:01,358 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:50:01,602 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-02-13 12:50:02,083 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-02-13 12:50:02,566 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-02-13 12:50:03,288 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-02-13 12:50:03,531 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/1_Pooling%2Fconfig.json "HTTP/1.1 200 OK"
+2026-02-13 12:50:04,014 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2 "HTTP/1.1 200 OK"
+2026-02-13 12:50:04,021 - src.semantic_model - INFO - model loaded successfully
+2026-02-13 12:50:04,024 - src.visualizer - INFO - Visualizations will be saved to: ./results\visualizations
+2026-02-13 12:50:04,024 - main - INFO -  System initialized successfully
+2026-02-13 12:50:04,024 - main - INFO -  Starting graph construction with 20 phrases...
+2026-02-13 12:50:04,025 - src.graph_builder - INFO - Building semantic graph with 20 nodes using type: top_k
+2026-02-13 12:50:04,025 - src.graph_builder - INFO - Calculating similarity matrix...
+2026-02-13 12:50:04,114 - src.graph_builder - INFO - Top-3 graph with 60 edges
+2026-02-13 12:50:04,118 - src.graph_builder - INFO - ==================================================
+2026-02-13 12:50:04,118 - src.graph_builder - INFO - Graph Metrics:
+2026-02-13 12:50:04,118 - src.graph_builder - INFO - ==================================================
+2026-02-13 12:50:04,118 - src.graph_builder - INFO -   Number of nodes: 20
+2026-02-13 12:50:04,118 - src.graph_builder - INFO -   Number of edges: 24
+2026-02-13 12:50:04,118 - src.graph_builder - INFO -   Density: 0.1263
+2026-02-13 12:50:04,118 - src.graph_builder - INFO -   Average degree: 2.40
+2026-02-13 12:50:04,118 - src.graph_builder - INFO -   Maximum degree: 5
+2026-02-13 12:50:04,118 - src.graph_builder - INFO -   Minimum degree: 1
+2026-02-13 12:50:04,119 - src.graph_builder - INFO -   Average weight: 0.2179
+2026-02-13 12:50:04,119 - src.graph_builder - INFO -   Connected: No
+2026-02-13 12:50:04,119 - src.graph_builder - INFO -   Number of components: 2
+2026-02-13 12:50:04,119 - src.graph_builder - INFO -   Average clustering: 0.2100
+2026-02-13 12:50:04,119 - src.graph_builder - INFO - ==================================================
+2026-02-13 12:50:04,125 - src.graph_builder - INFO - Graph saved as GraphML to ./results\graphs\semantic_graph_20260213_125004.graphml
+2026-02-13 12:50:04,130 - src.graph_builder - INFO - Graph saved as GEXF to ./results\graphs\semantic_graph_20260213_125004.gexf
+2026-02-13 12:50:04,132 - src.graph_builder - INFO - Graph saved as JSON to ./results\graphs\semantic_graph_20260213_125004.json
+2026-02-13 12:50:04,134 - src.graph_builder - INFO - Adjacency matrix saved to ./results\graphs\semantic_graph_20260213_125004_adjacency.npy
+2026-02-13 12:50:04,136 - src.graph_builder - INFO - Metadata saved to ./results\graphs\semantic_graph_20260213_125004_meta.json
+2026-02-13 12:50:04,136 - main - INFO -  Graph built successfully

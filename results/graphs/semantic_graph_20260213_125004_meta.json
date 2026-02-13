@@ -1,0 +1,61 @@
+{
+  "phrases": [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Neural Network",
+    "Natural Language Processing",
+    "Computer Vision",
+    "Data Mining",
+    "Genetic Algorithm",
+    "Robotics",
+    "Automation",
+    "Data Analysis",
+    "Apple",
+    "Fruit",
+    "Technology",
+    "iPhone",
+    "Smartphone",
+    "Computer",
+    "Laptop",
+    "Programming",
+    "Algorithm",
+    "Data Structure"
+  ],
+  "phrase_to_idx": {
+    "Artificial Intelligence": 0,
+    "Machine Learning": 1,
+    "Neural Network": 2,
+    "Natural Language Processing": 3,
+    "Computer Vision": 4,
+    "Data Mining": 5,
+    "Genetic Algorithm": 6,
+    "Robotics": 7,
+    "Automation": 8,
+    "Data Analysis": 9,
+    "Apple": 10,
+    "Fruit": 11,
+    "Technology": 12,
+    "iPhone": 13,
+    "Smartphone": 14,
+    "Computer": 15,
+    "Laptop": 16,
+    "Programming": 17,
+    "Algorithm": 18,
+    "Data Structure": 19
+  },
+  "config": {
+    "graph_type": "top_k",
+    "threshold": 0.25,
+    "top_k": 3
+  },
+  "timestamp": "20260213_125004",
+  "metrics": {
+    "num_nodes": 20,
+    "num_edges": 24,
+    "density": 0.12631578947368421
+  },
+  "saved_formats": [
+    "adjacency",
+    "json"
+  ]
+}

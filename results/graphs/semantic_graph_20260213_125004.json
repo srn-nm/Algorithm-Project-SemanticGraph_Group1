@@ -1,0 +1,274 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "label": "Artificial Intelligence",
+      "phrase": "Artificial Intelligence"
+    },
+    {
+      "id": 1,
+      "label": "Machine Learning",
+      "phrase": "Machine Learning"
+    },
+    {
+      "id": 2,
+      "label": "Neural Network",
+      "phrase": "Neural Network"
+    },
+    {
+      "id": 3,
+      "label": "Natural Language Processing",
+      "phrase": "Natural Language Processing"
+    },
+    {
+      "id": 4,
+      "label": "Computer Vision",
+      "phrase": "Computer Vision"
+    },
+    {
+      "id": 5,
+      "label": "Data Mining",
+      "phrase": "Data Mining"
+    },
+    {
+      "id": 6,
+      "label": "Genetic Algorithm",
+      "phrase": "Genetic Algorithm"
+    },
+    {
+      "id": 7,
+      "label": "Robotics",
+      "phrase": "Robotics"
+    },
+    {
+      "id": 8,
+      "label": "Automation",
+      "phrase": "Automation"
+    },
+    {
+      "id": 9,
+      "label": "Data Analysis",
+      "phrase": "Data Analysis"
+    },
+    {
+      "id": 10,
+      "label": "Apple",
+      "phrase": "Apple"
+    },
+    {
+      "id": 11,
+      "label": "Fruit",
+      "phrase": "Fruit"
+    },
+    {
+      "id": 12,
+      "label": "Technology",
+      "phrase": "Technology"
+    },
+    {
+      "id": 13,
+      "label": "iPhone",
+      "phrase": "iPhone"
+    },
+    {
+      "id": 14,
+      "label": "Smartphone",
+      "phrase": "Smartphone"
+    },
+    {
+      "id": 15,
+      "label": "Computer",
+      "phrase": "Computer"
+    },
+    {
+      "id": 16,
+      "label": "Laptop",
+      "phrase": "Laptop"
+    },
+    {
+      "id": 17,
+      "label": "Programming",
+      "phrase": "Programming"
+    },
+    {
+      "id": 18,
+      "label": "Algorithm",
+      "phrase": "Algorithm"
+    },
+    {
+      "id": 19,
+      "label": "Data Structure",
+      "phrase": "Data Structure"
+    }
+  ],
+  "edges": [
+    {
+      "source": 0,
+      "target": 1,
+      "weight": 0.14826858043670654,
+      "similarity": 0.8517314195632935,
+      "distance": 0.14826858043670654
+    },
+    {
+      "source": 0,
+      "target": 2,
+      "weight": 0.2067422866821289,
+      "similarity": 0.7932577133178711,
+      "distance": 0.2067422866821289
+    },
+    {
+      "source": 0,
+      "target": 8,
+      "weight": 0.20240294933319092,
+      "similarity": 0.7975970506668091,
+      "distance": 0.20240294933319092
+    },
+    {
+      "source": 1,
+      "target": 2,
+      "weight": 0.21030980348587036,
+      "similarity": 0.7896901965141296,
+      "distance": 0.21030980348587036
+    },
+    {
+      "source": 1,
+      "target": 5,
+      "weight": 0.13980114459991455,
+      "similarity": 0.8601988554000854,
+      "distance": 0.13980114459991455
+    },
+    {
+      "source": 2,
+      "target": 4,
+      "weight": 0.272851824760437,
+      "similarity": 0.727148175239563,
+      "distance": 0.272851824760437
+    },
+    {
+      "source": 3,
+      "target": 5,
+      "weight": 0.2603069543838501,
+      "similarity": 0.7396930456161499,
+      "distance": 0.2603069543838501
+    },
+    {
+      "source": 4,
+      "target": 7,
+      "weight": 0.25647813081741333,
+      "similarity": 0.7435218691825867,
+      "distance": 0.25647813081741333
+    },
+    {
+      "source": 5,
+      "target": 9,
+      "weight": 0.18049222230911255,
+      "similarity": 0.8195077776908875,
+      "distance": 0.18049222230911255
+    },
+    {
+      "source": 6,
+      "target": 18,
+      "weight": 0.16887235641479492,
+      "similarity": 0.8311276435852051,
+      "distance": 0.16887235641479492
+    },
+    {
+      "source": 7,
+      "target": 8,
+      "weight": 0.2555498480796814,
+      "similarity": 0.7444501519203186,
+      "distance": 0.2555498480796814
+    },
+    {
+      "source": 8,
+      "target": 17,
+      "weight": 0.25590288639068604,
+      "similarity": 0.744097113609314,
+      "distance": 0.25590288639068604
+    },
+    {
+      "source": 9,
+      "target": 19,
+      "weight": 0.21376287937164307,
+      "similarity": 0.7862371206283569,
+      "distance": 0.21376287937164307
+    },
+    {
+      "source": 10,
+      "target": 13,
+      "weight": 0.13808536529541016,
+      "similarity": 0.8619146347045898,
+      "distance": 0.13808536529541016
+    },
+    {
+      "source": 10,
+      "target": 14,
+      "weight": 0.22661298513412476,
+      "similarity": 0.7733870148658752,
+      "distance": 0.22661298513412476
+    },
+    {
+      "source": 10,
+      "target": 15,
+      "weight": 0.21878987550735474,
+      "similarity": 0.7812101244926453,
+      "distance": 0.21878987550735474
+    },
+    {
+      "source": 11,
+      "target": 12,
+      "weight": 0.3207877278327942,
+      "similarity": 0.6792122721672058,
+      "distance": 0.3207877278327942
+    },
+    {
+      "source": 11,
+      "target": 15,
+      "weight": 0.2730996012687683,
+      "similarity": 0.7269003987312317,
+      "distance": 0.2730996012687683
+    },
+    {
+      "source": 12,
+      "target": 15,
+      "weight": 0.21971797943115234,
+      "similarity": 0.7802820205688477,
+      "distance": 0.21971797943115234
+    },
+    {
+      "source": 12,
+      "target": 17,
+      "weight": 0.2744675874710083,
+      "similarity": 0.7255324125289917,
+      "distance": 0.2744675874710083
+    },
+    {
+      "source": 13,
+      "target": 14,
+      "weight": 0.1255779266357422,
+      "similarity": 0.8744220733642578,
+      "distance": 0.1255779266357422
+    },
+    {
+      "source": 13,
+      "target": 15,
+      "weight": 0.26497137546539307,
+      "similarity": 0.7350286245346069,
+      "distance": 0.26497137546539307
+    },
+    {
+      "source": 14,
+      "target": 16,
+      "weight": 0.2537044882774353,
+      "similarity": 0.7462955117225647,
+      "distance": 0.2537044882774353
+    },
+    {
+      "source": 15,
+      "target": 16,
+      "weight": 0.14298951625823975,
+      "similarity": 0.8570104837417603,
+      "distance": 0.14298951625823975
+    }
+  ]
+}
