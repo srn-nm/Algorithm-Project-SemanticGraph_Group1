@@ -203,49 +203,49 @@ class SearchAlgorithms:
         result.error_message = "No path found"
         result.nodes_visited = nodes_visited
         return result
-    
+
     def _astar_search(self, start: int, end: int) -> SearchResult:
         result = SearchResult()
-        
+
         if self.semantic_model is None:
             result.success = False
             result.error_message = "No semantic model chosen for A* heuristic"
             return result
-        
+
         n = len(self.phrases)
 
         if start >= n or end >= n:
             result.success = False
-            result.error_message = f"Start ({start}) or end ({end}) index out of range (max: {n-1})"
+            result.error_message = f"Start ({start}) or end ({end}) index out of range (max: {n - 1})"
             return result
-        
-        def heuristic(node: int) -> float:
-            if node == end:
-                return 0
-            
-            similarity = self.semantic_model.compute_similarity(
-                self.phrases[node], 
-                self.phrases[end]
-            ).similarity
-            
-            return self.config.heuristic_weight * (1 - similarity)
-        
-        g_score = [float('inf')] * n 
+
+        heuristic_values = [0.0] * n
+        for i in range(n):
+            if i == end:
+                heuristic_values[i] = 0.0
+            else:
+                similarity = self.semantic_model.compute_similarity(
+                    self.phrases[i],
+                    self.phrases[end]
+                ).similarity
+                heuristic_values[i] = self.config.heuristic_weight * (1 - similarity)
+
+        g_score = [float('inf')] * n
         g_score[start] = 0
-        
-        f_score = [float('inf')] * n 
-        f_score[start] = heuristic(start)
-        
+
+        f_score = [float('inf')] * n
+        f_score[start] = heuristic_values[start]  # f(start) = h(start)
+
         open_set = [(f_score[start], start)]
         heapq.heapify(open_set)
-        
+
         came_from = [-1] * n
         nodes_visited = 0
-        
+
         while open_set:
             _, current = heapq.heappop(open_set)
             nodes_visited += 1
-            
+
             if current == end:
                 path = self._reconstruct_path(came_from, start, end)
                 result.success = True
@@ -253,18 +253,17 @@ class SearchAlgorithms:
                 result.total_distance = g_score[end]
                 result.nodes_visited = nodes_visited
                 return result
-            
+
             for neighbor in range(n):
                 weight = self.adjacency[current][neighbor]
                 if weight != float('inf'):
                     tentative_g = g_score[current] + weight
-                    
                     if tentative_g < g_score[neighbor]:
                         came_from[neighbor] = current
                         g_score[neighbor] = tentative_g
-                        f_score[neighbor] = tentative_g + heuristic(neighbor)
+                        f_score[neighbor] = tentative_g + heuristic_values[neighbor]  # استفاده از مقدار پیش‌محاسبه شده
                         heapq.heappush(open_set, (f_score[neighbor], neighbor))
-        
+
         result.success = False
         result.error_message = "No path found"
         result.nodes_visited = nodes_visited

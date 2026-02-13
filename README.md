@@ -39,8 +39,8 @@ Hananeh Ahmadi - 40247213 - some part of the implementation , Testing, Performan
   `Weight(u, v) = 1 - Similarity(u, v)
 Team Members
 
-Sarina Nasermoghaddasi - 40222083 -  Algorithm design, Core implementation, Complexity analysis 
-Hananeh Ahmadi - 40247213 - Testing, Performance evaluation, Documentation, Demo 
+Sarina Nasermoghaddasi - 40222083 -  Algorithm design, some part of the implementation, Complexity analysis 
+Hananeh Ahmadi - 40247213 - some part of the implementation وTesting, Performance evaluation, Documentation, Demo 
 
 `
   
