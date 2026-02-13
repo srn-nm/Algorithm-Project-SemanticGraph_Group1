@@ -13,7 +13,6 @@ import sys
 from config import Algorithm
 
 logger = logging.getLogger(__name__)
-
 @dataclass
 class PerformanceMetrics:
     algorithm: str
@@ -189,8 +188,7 @@ class SystemEvaluator:
                 avg_path_length=avg_path_len,
                 speedup_vs_dijkstra=0.0
             )
-        
-        # Calculate speedup vs Dijkstra
+
         if 'dijkstra' in metrics and metrics['dijkstra'].avg_time > 0:
             dijkstra_time = metrics['dijkstra'].avg_time
             
@@ -203,8 +201,7 @@ class SystemEvaluator:
     def _save_performance_results(self, metrics: Dict[str, PerformanceMetrics]):
         """Save performance results to JSON and CSV files"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        # Save as JSON
+
         json_data = {}
         for algo_name, metric in metrics.items():
             json_data[algo_name] = {
@@ -226,8 +223,7 @@ class SystemEvaluator:
             logger.info(f"Results saved to {json_path}")
         except Exception as e:
             logger.error(f"Error saving JSON results: {e}")
-        
-        # Save as CSV
+
         csv_data = []
         for algo_name, metric in metrics.items():
             csv_data.append({
@@ -249,19 +245,17 @@ class SystemEvaluator:
             logger.info(f"Results saved to {csv_path}")
         except Exception as e:
             logger.error(f"Error saving CSV results: {e}")
-    
+
     def evaluate_scalability(self, max_nodes: int = 100, step: int = 10):
         """Evaluate system scalability with increasing number of nodes"""
         import random
         import string
         import psutil
         import tracemalloc
-        
         logger.info("Starting scalability evaluation...")
-
         from src.graph_builder import GraphBuilder
         from src.semantic_model import SemanticModel
-        
+
         scalability_results = []
 
         model_config = type('obj', (object,), {
@@ -425,4 +419,4 @@ class SystemEvaluator:
         except ImportError as e:
             logger.warning(f"Matplotlib/Seaborn not available for plotting: {e}")
         except Exception as e:
-            logger.error(f"Error generating scalability plots: {e}")
+            logger.error(f"Error for generating scalability plots: {e}")
