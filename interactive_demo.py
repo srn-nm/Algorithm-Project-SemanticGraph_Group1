@@ -180,12 +180,10 @@ class InteractiveDemo:
         if not end_input.isdigit():
             print(" Error: Please enter a valid number")
             return
-        
-        # Convert to indices (0-based)
+
         start_idx = int(start_input) - 1
         end_idx = int(end_input) - 1
-        
-        # Validate indices
+
         if start_idx < 0 or start_idx >= len(self.system.phrases):
             print(f" Error: Invalid start number. Please enter 1-{len(self.system.phrases)}")
             return
@@ -193,14 +191,11 @@ class InteractiveDemo:
         if end_idx < 0 or end_idx >= len(self.system.phrases):
             print(f" Error: Invalid end number. Please enter 1-{len(self.system.phrases)}")
             return
-        
-        # Get the actual phrases
+
         start_phrase = self.system.phrases[start_idx]
         end_phrase = self.system.phrases[end_idx]
         
         print(f"\n Selected: '{start_phrase}' → '{end_phrase}'")
-        
-        # Get algorithm choice
         print("\nSearch algorithm:")
         print("1. BFS (unweighted)")
         print("2. Dijkstra (shortest path)")
@@ -228,7 +223,6 @@ class InteractiveDemo:
         print(f"{Fore.CYAN}{'='*60}")
         
         if isinstance(result, dict):
-            # Handle dictionary result format
             if result.get('success'):
                 print(f"{Fore.GREEN}✓ Path found!")
                 print(f"\n{Fore.WHITE}Algorithm: {result.get('algorithm', 'Unknown').upper()}")
@@ -245,7 +239,7 @@ class InteractiveDemo:
 
                 if 'edge_details' in result and result['edge_details']:
                     print(f"\n{Fore.YELLOW}Edge details:")
-                    for i, edge in enumerate(result['edge_details'][:5]):  # Show first 5 edges
+                    for i, edge in enumerate(result['edge_details'][:5]):
                         print(f"{Fore.WHITE}  {i+1}. {edge['from']} → {edge['to']}: "
                             f"similarity={edge['similarity']:.3f}, distance={edge['distance']:.3f}")
                     if len(result['edge_details']) > 5:
@@ -396,13 +390,11 @@ class InteractiveDemo:
             text1 = input(f"\n{Fore.GREEN}First text (empty to return): ").strip()
             if not text1:
                 break
-            
             text2 = input(f"{Fore.GREEN}Second text: ").strip()
             if not text2:
                 break
             
             result = self.system.semantic_model.compute_similarity(text1, text2)
-            
             print(f"\n{Fore.CYAN}Results:")
             print(f"{Fore.WHITE}Similarity: {result.similarity:.4f}")
             print(f"{Fore.WHITE}Distance: {result.distance:.4f}")
